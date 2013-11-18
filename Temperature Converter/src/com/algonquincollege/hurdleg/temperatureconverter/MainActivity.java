@@ -36,7 +36,7 @@ public class MainActivity extends Activity implements Observer {
 	private TemperatureModel      model;
 	private DoubleSeekBar         seekBarCelsius;
 	private DoubleSeekBar         seekBarFahrenheit;
-	//TODO :: private DoubleSeekBar seekBarKelvin;
+	private DoubleSeekBar 		seekBarKelvin;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +69,13 @@ public class MainActivity extends Activity implements Observer {
 		seekBarFahrenheit.setUnits( getResources().getString(R.string.units) );
 
 		// reference the Kelvin seekbar
-		//TODO :: seekBarKelvin = (DoubleSeekBar) find...
+		
+		seekBarKelvin = (DoubleSeekBar) findViewById( R.id.seekBarKelvin );
+		seekBarKelvin.setHasMax( false );
+		seekBarKelvin.setMaxValue( TemperatureModel.MAX_KELVIN );
+		seekBarKelvin.setMinValue( TemperatureModel.MIN_KELVIN );
+		seekBarKelvin.setMinTitle( getResources().getString(R.string.kelvin) );
+		seekBarKelvin.setUnits( getResources().getString(R.string.kelvin) );
 
 		// register an anonymous inner class as the event handler
 		// for when the seekbar changes
@@ -99,7 +105,20 @@ public class MainActivity extends Activity implements Observer {
 			}
 		} );
 
-	    //TODO :: seekBarKelvin.registerOn....
+	   seekBarKelvin.registerOnChangeListenerMinSB( new OnSeekBarChangeListener() {
+		   
+		   @Override
+			public void onStartTrackingTouch(SeekBar seekBar) { /*NOOP*/ }
+		   
+		   @Override
+			public void onStopTrackingTouch(SeekBar seekBar) { /*NOOP*/ }
+		   
+		   @Override
+			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+				model.setKelvin( seekBarKelvin.getCurrentMinValue() + 0.0F );
+			}
+	   });
+	  
 
 		// synch this activity with the model
 		this.updateActivity();
@@ -196,6 +215,7 @@ public class MainActivity extends Activity implements Observer {
 	}
 
 	private void updateKelvin() {
-		//TODO :: seekBarKelvin.setCurrentMinValue...
+		
+		seekBarKelvin.setCurrentMinValue( Math.round(model.getKelvin()) );
 	}
 }
